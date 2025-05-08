@@ -10,14 +10,18 @@ using System.Windows.Forms;
 using System.IO;
 namespace _3poprawa
 {
-    public partial class Form1: Form
+
+    public partial class Form1 : Form
     {
+        private List<Osoba> osoby;
 
         public Form1()
         {
             InitializeComponent();
             InitializeDataGridView();
+            osoby = new List<Osoba>();
         }
+
         private void InitializeDataGridView()
         {
             dataGridView1.ColumnCount = 5;
@@ -26,17 +30,17 @@ namespace _3poprawa
             dataGridView1.Columns[2].Name = "Nazwisko";
             dataGridView1.Columns[3].Name = "Wiek";
             dataGridView1.Columns[4].Name = "Stanowisko";
-           
-        }
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Form2 addForm = new Form2(dataGridView1);
-            addForm.ShowDialog();
+            Form2 addForm = new Form2();
+            if (addForm.ShowDialog() == DialogResult.OK)
+            {
+                Osoba nowaOsoba = addForm.NowaOsoba;
+                osoby.Add(nowaOsoba);
+                dataGridView1.Rows.Add(nowaOsoba.ID, nowaOsoba.Imię, nowaOsoba.Nazwisko, nowaOsoba.Wiek, nowaOsoba.Stanowisko);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -44,7 +48,11 @@ namespace _3poprawa
             foreach (DataGridViewRow row in dataGridView1.SelectedRows)
             {
                 if (!row.IsNewRow)
+                { 
+                    int idToRemove = Convert.ToInt32(row.Cells[0].Value);
+                    osoby.RemoveAll(o => o.ID == idToRemove);
                     dataGridView1.Rows.Remove(row);
+                }
             }
         }
 
@@ -69,6 +77,10 @@ namespace _3poprawa
                 LoadCSVToDataGridView(openFileDialog1.FileName);
             }
         }
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+        }
+
         private void ExportToCSV(DataGridView dataGridView, string filePath)
         {
             StringBuilder csvContent = new StringBuilder();
@@ -106,5 +118,3 @@ namespace _3poprawa
         }
     }
 }
-
-  
