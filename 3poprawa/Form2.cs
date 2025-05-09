@@ -37,6 +37,7 @@ namespace _3poprawa
             id++;
 
             NowaOsoba = new Osoba(id, firstName, lastName, (int)age, position);
+            id++;
 
             DialogResult = DialogResult.OK;
             Close();
